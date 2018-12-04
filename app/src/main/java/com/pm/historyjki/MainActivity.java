@@ -2,6 +2,7 @@ package com.pm.historyjki;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import lombok.Data;
 
 public class MainActivity extends AppCompatActivity {
 
