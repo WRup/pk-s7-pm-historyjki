@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">historyjki</string>
+    <string name="somethingGoesWrongErrorMsg">Something goes wrong</string>
 </resources>
