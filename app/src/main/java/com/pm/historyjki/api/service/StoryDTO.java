@@ -1,8 +1,8 @@
 package com.pm.historyjki.api.service;
 
-import java.util.List;
-
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class StoryDTO {
@@ -13,4 +13,11 @@ public class StoryDTO {
     private Integer likeNumber;
     private Integer dislikeNumber;
     private StoryContent content;
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }
+
+
