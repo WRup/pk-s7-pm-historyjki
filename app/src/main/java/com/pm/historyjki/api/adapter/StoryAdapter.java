@@ -35,8 +35,8 @@ public class StoryAdapter extends ArrayAdapter<StoryDTO> {
 
 
         TextView storyTitle = rowView.findViewById(R.id.tv_lv_item);
-        TextView likeNumber = rowView.findViewById(R.id.like);
-        TextView dislikeNumber = rowView.findViewById(R.id.dislike);
+        TextView likeNumber = rowView.findViewById(R.id.btn_like);
+        TextView dislikeNumber = rowView.findViewById(R.id.tv_dislike);
 
         storyTitle.setText(story.getTitle());
         likeNumber.setText(String.valueOf(story.getLikeNumber()));

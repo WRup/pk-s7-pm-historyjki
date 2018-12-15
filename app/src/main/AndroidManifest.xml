@@ -25,7 +25,9 @@
                 android:enabled="true"
                 android:exported="true"/>
 
-        <activity android:name=".StoryCreatorActivity">
+        <activity
+                android:windowSoftInputMode="adjustPan"
+                android:name=".StoryCreatorActivity">
         </activity>
     </application>
 

@@ -14,8 +14,8 @@ public class StoryDTO implements Parcelable {
     private String authorName;
     private String title;
     private List<String> tags;
-    private Integer likeNumber;
-    private Integer dislikeNumber;
+    private Integer likeNumber = 0;
+    private Integer dislikeNumber = 0;
     private StoryContent content;
 
 

@@ -19,18 +19,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StoryFormFragment extends Fragment {
 
-    public final static String TAG = StoryFormFragment.class.getSimpleName();
+    public static final String TAG = StoryFormFragment.class.getSimpleName();
 
     private StoryDTO storyDTO;
 
-    private OnSubmitListener submitListener;
+    private OnNewStorySubmitListener submitListener;
 
-    // TODO: Rename and change types and number of parameters
     public static StoryFormFragment newInstance(StoryDTO storyDTO) {
         StoryFormFragment fragment = new StoryFormFragment();
         Bundle args = new Bundle();
         args.putParcelable(StoryDTO.class.getSimpleName(), storyDTO);
         fragment.setArguments(args);
+
+
         return fragment;
     }
 
@@ -39,10 +40,10 @@ public class StoryFormFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof OnSubmitListener) {
-            submitListener = (OnSubmitListener) context;
+        if (context instanceof OnNewStorySubmitListener) {
+            submitListener = (OnNewStorySubmitListener) context;
         } else {
-            throw new IllegalArgumentException(context.toString() + " must implement" + OnSubmitListener.class.getSimpleName());
+            throw new IllegalArgumentException(context.toString() + " must implement" + OnNewStorySubmitListener.class.getSimpleName());
         }
     }
 
@@ -105,7 +106,7 @@ public class StoryFormFragment extends Fragment {
         }
     }
 
-    public interface OnSubmitListener {
+    public interface OnNewStorySubmitListener {
         void onSubmit(StoryDTO storyDTO);
     }
 }
