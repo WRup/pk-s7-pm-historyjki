@@ -12,10 +12,14 @@ import com.pm.historyjki.api.service.StoryDTO;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.util.Consumer;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -38,9 +42,25 @@ public class MainActivity extends AppCompatActivity {
 //        startService(serviceIntent);
 //        bindService(serviceIntent, serviceConnection, Context.BIND_ABOVE_CLIENT);
 
+        init();
+    }
+
+    private void init() {
         initTabs();
         initStoriesView();
         updateCurrentStories();
+        initCreateStoryBtn();
+    }
+
+    private void initCreateStoryBtn() {
+        FloatingActionButton btn = findViewById(R.id.btn_create_story);
+        btn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, StoryCreatorActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void updateCurrentStories() {

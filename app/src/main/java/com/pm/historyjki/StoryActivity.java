@@ -1,25 +1,22 @@
 package com.pm.historyjki;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.util.Consumer;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
 import com.pm.historyjki.api.service.StoryApiCallService;
 import com.pm.historyjki.api.service.StoryDTO;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.util.Consumer;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class StoryActivity extends AppCompatActivity {
 
