@@ -3,4 +3,6 @@
     <string name="somethingGoesWrongErrorMsg">Something goes wrong</string>
     <string name="dislike">DISLIKE</string>
     <string name="like">LIKE</string>
+    <string name="addButton">Button</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

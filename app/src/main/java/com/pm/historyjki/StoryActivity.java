@@ -1,10 +1,18 @@
 package com.pm.historyjki;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.util.Consumer;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
 import com.pm.historyjki.api.service.StoryApiCallService;
@@ -15,7 +23,13 @@ import java.util.Iterator;
 
 public class StoryActivity extends AppCompatActivity {
 
+    private StoryDTO actualStory = new StoryDTO();
     private StoryApiCallService storyApiCallService;
+
+    private Button likeButton;
+    private Button dislikeButton;
+
+    boolean checked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,18 +48,24 @@ public class StoryActivity extends AppCompatActivity {
         storyApiCallService.getStory(storyId, new Consumer<StoryDTO>() {
             @Override
             public void accept(StoryDTO storyDTO) {
-                initStoriesView(storyDTO);
+                actualStory = storyDTO;
+                initStoriesView(actualStory);
             }
         }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(StoryActivity.this, getText(R.string.somethingGoesWrongErrorMsg), Toast.LENGTH_SHORT)
-                     .show();
+                        .show();
             }
         });
     }
 
     private void initStoriesView(StoryDTO storyDTO) {
+        likeButton = findViewById(R.id.like);
+        dislikeButton = findViewById(R.id.dislike);
+        setButtonListener(likeButton,actualStory);
+        setButtonListener(dislikeButton,actualStory);
+
         TextView storiesTv = findViewById(R.id.tv_story);
         storiesTv.setText(storyDTO.getContent().getContent());
         ArrayList<TextView> continuationsTv = new ArrayList<>();
@@ -61,4 +81,86 @@ public class StoryActivity extends AppCompatActivity {
             it1.next().setText(it2.next());
         }
     }
+
+
+    private void setButtonListener(Button button, final StoryDTO storyDTO) {
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.like:
+                        if (!checked) {
+                            dislikeButton.setClickable(false);
+                            dislikeButton.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                            checked = true;
+                        } else {
+                            dislikeButton.setClickable(true);
+                            dislikeButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                            checked = false;
+                        }
+                        likeStory(storyDTO, checked);
+                        break;
+                    case R.id.dislike:
+                        if (!checked) {
+                            likeButton.setClickable(false);
+                            likeButton.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                            checked = true;
+                        } else {
+                            likeButton.setClickable(true);
+                            likeButton.setTextColor(getResources().getColor(android.R.color.holo_green_light));
+                            checked = false;
+                        }
+                        dislikeStory(storyDTO, checked);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void likeStory(StoryDTO storyDTO, boolean checked) {
+        if (checked)
+            storyDTO.setLikeNumber(storyDTO.getLikeNumber() + 1);
+        else
+            storyDTO.setLikeNumber(storyDTO.getLikeNumber() - 1);
+    }
+
+    private void dislikeStory(StoryDTO storyDTO, boolean checked) {
+        if(checked)
+          storyDTO.setDislikeNumber(storyDTO.getDislikeNumber() + 1);
+        else
+            storyDTO.setDislikeNumber(storyDTO.getDislikeNumber() - 1);
+
+
+    }
+
+    private void updateStory(StoryDTO actualStory){
+        storyApiCallService.updateStory(actualStory, new Consumer<StoryDTO>() {
+                    @Override
+                    public void accept(StoryDTO storyDTO) {
+                        System.out.println(storyDTO.getLikeNumber());
+                        Intent returnIntent = new Intent();
+                        setResult(Activity.RESULT_OK,returnIntent);
+                        finish();
+                    }
+                },
+                new ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("Tu mi rzucasz wyjatek?");
+                        Toast.makeText(StoryActivity.this, getText(R.string.somethingGoesWrongErrorMsg), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        System.out.println("back has been pressed.");
+        updateStory(actualStory);
+
+    }
+
+
 }

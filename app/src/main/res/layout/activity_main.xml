@@ -7,13 +7,26 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
+    <android.support.design.widget.TabLayout
+        android:id="@+id/toolbarfilter"
+        android:layout_width="393dp"
+        android:layout_height="63dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/lv_stories"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:tabIndicatorColor="@color/colorPrimaryDark"
+        app:tabMaxWidth="0dp"
+        app:tabMode="fixed" />
+
     <ListView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:id="@+id/lv_stories" android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-            app:layout_constraintVertical_bias="0.0"/>
+        android:id="@+id/lv_stories"
+        android:layout_width="386dp"
+        android:layout_height="448dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    </ListView>
 
 </android.support.constraint.ConstraintLayout>
