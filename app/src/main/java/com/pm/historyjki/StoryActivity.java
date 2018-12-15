@@ -35,9 +35,7 @@ public class StoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
-
         storyApiCallService = new StoryApiCallService(this);
-
         initStory();
     }
 
@@ -114,6 +112,7 @@ public class StoryActivity extends AppCompatActivity {
                         dislikeStory(storyDTO, checked);
                         break;
                 }
+                updateStory(actualStory);
             }
         });
     }
@@ -134,20 +133,15 @@ public class StoryActivity extends AppCompatActivity {
 
     }
 
-    private void updateStory(StoryDTO actualStory){
+    private void updateStory(final StoryDTO actualStory){
         storyApiCallService.updateStory(actualStory, new Consumer<StoryDTO>() {
                     @Override
                     public void accept(StoryDTO storyDTO) {
-                        System.out.println(storyDTO.getLikeNumber());
-                        Intent returnIntent = new Intent();
-                        setResult(Activity.RESULT_OK,returnIntent);
-                        finish();
                     }
                 },
                 new ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.out.println("Tu mi rzucasz wyjatek?");
                         Toast.makeText(StoryActivity.this, getText(R.string.somethingGoesWrongErrorMsg), Toast.LENGTH_SHORT)
                                 .show();
                     }
@@ -157,10 +151,8 @@ public class StoryActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        System.out.println("back has been pressed.");
-        updateStory(actualStory);
-
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
     }
-
-
 }

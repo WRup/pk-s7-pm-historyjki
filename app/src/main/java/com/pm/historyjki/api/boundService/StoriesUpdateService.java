@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Consumer;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -21,9 +22,12 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MyBoundService extends Service {
+public class StoriesUpdateService extends Service {
+
+    public static final String TAG = StoriesUpdateService.class.getSimpleName();
+
     private StoryApiCallService storyApiCallService;
-    private List<StoryDTO> stories;
+    private List<StoryDTO> stories = new ArrayList<>();
     private final IBinder binder = new MyBinder();
     private Toast toast;
     private Timer timer;
@@ -33,7 +37,6 @@ public class MyBoundService extends Service {
     public void onCreate() {
         super.onCreate();
         timer = new Timer();
-        toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         storyApiCallService = new StoryApiCallService(this);
     }
 
@@ -41,7 +44,7 @@ public class MyBoundService extends Service {
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         clearTimerSchedule();
         initTask();
-        timer.scheduleAtFixedRate(timerTask, 6 * 1000, 6 * 1000);
+        timer.scheduleAtFixedRate(timerTask, 0, 60_000);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -54,8 +57,9 @@ public class MyBoundService extends Service {
                     storyApiCallService.getAllStories(new Consumer<List<StoryDTO>>() {
                                                           @Override
                                                           public void accept(List<StoryDTO> storyDTOS) {
-                                                              stories = new ArrayList<>(storyDTOS);
-                                                              showToast("Pobralem dane z bazy.");
+                                                              stories.clear();
+                                                              stories.addAll(storyDTOS);
+                                                              Log.d(TAG, "The service has downloaded the stories");
                                                           }
                                                       }, new Response.ErrorListener() {
                                                           @Override
@@ -75,7 +79,10 @@ public class MyBoundService extends Service {
     }
 
     private void showToast(String text) {
-        toast.setText(text);
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
         toast.show();
     }
 
@@ -97,8 +104,8 @@ public class MyBoundService extends Service {
     }
 
     public class MyBinder extends Binder {
-        public MyBoundService getMyService() {
-            return MyBoundService.this;
+        public StoriesUpdateService getMyService() {
+            return StoriesUpdateService.this;
         }
     }
 

@@ -5,4 +5,6 @@
     <string name="like">LIKE</string>
     <string name="addButton">Button</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="stories">Stories</string>
+    <string name="myStories">My stories</string>
 </resources>
