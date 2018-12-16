@@ -7,10 +7,40 @@
         android:layout_height="match_parent"
         tools:context="com.pm.historyjki.StoryActivity">
 
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/ll_story_details_header"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.0">
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:gravity="center"
+                      android:layout_weight="0.2">
+            <CheckBox
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/btn_story_details_fav"
+                    android:button="@drawable/favourite_button"
+                    android:gravity="center"
+                    android:text=""
+                    android:layout_gravity="center"
+                    style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+                    android:checked="true"
+                    />
+        </LinearLayout>
+        <TextView
+                android:text="@string/title"
+                android:layout_width="wrap_content"
+                android:padding="10dp"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent" android:id="@+id/tv_story_details_title"
+                android:layout_weight="1"/>
+    </LinearLayout>
     <EditText
             android:id="@+id/et_story"
             android:layout_width="0dp"
-            android:layout_height="200dp"
             android:inputType="text"
             android:hint="@string/storyContent"
             android:background="@drawable/back"
@@ -18,7 +48,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             android:scrollbars="vertical"
-            app:layout_constraintTop_toTopOf="parent" android:gravity="start" />
+            android:gravity="start" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/ll_story_details_header" android:layout_height="150dp"/>
 
     <EditText
             android:id="@+id/et_continuation_1"
@@ -29,9 +60,8 @@
             app:layout_constraintStart_toStartOf="parent"
             android:inputType="text"
             android:hint="@string/firstContinuation"
-            android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@+id/et_story"
             android:gravity="start"
-    />
+            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/et_story"/>
 
     <EditText
             android:id="@+id/et_continuation_2"

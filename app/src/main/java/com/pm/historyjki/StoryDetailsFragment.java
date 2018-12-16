@@ -6,6 +6,8 @@ import java.util.Objects;
 
 import com.pm.historyjki.api.service.StoryContent;
 import com.pm.historyjki.api.service.StoryDTO;
+import com.pm.historyjki.db.model.FavouriteStory;
+import com.pm.historyjki.service.FavouriteStoryService;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -18,7 +20,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.TextView;
 import lombok.NoArgsConstructor;
 
 
@@ -42,6 +48,8 @@ public class StoryDetailsFragment extends Fragment {
     private boolean readOnlyView = false;
 
     private LikeDislikeButtonState likeDislikeButtonState;
+
+    private FavouriteStoryService favouriteStoryService;
 
     public static StoryDetailsFragment newInstance(StoryDTO storyDTO, boolean readOnlyView) {
         StoryDetailsFragment fragment = new StoryDetailsFragment();
@@ -75,6 +83,7 @@ public class StoryDetailsFragment extends Fragment {
             storyDTO = getArguments().getParcelable(StoryDTO.class.getSimpleName());
             readOnlyView = getArguments().getBoolean("readOnlyView");
         }
+        favouriteStoryService = new FavouriteStoryService();
     }
 
     @Override
@@ -92,8 +101,20 @@ public class StoryDetailsFragment extends Fragment {
         initView();
     }
 
+    private boolean isFavouriteBtnEnable() {
+        return !(favouriteStoryService == null || storyDTO == null || !readOnlyView);
+    }
+
+    private boolean isFavourite() {
+        if (storyDTO == null || favouriteStoryService == null) {
+            return false;
+        }
+        return favouriteStoryService.isFavourite(storyDTO.getId());
+    }
+
     private void initView() {
         if (storyDTO != null && storyDTO.getContent() != null) {
+            getStoryTitle().setText(storyDTO.getTitle());
             getStoryContent().setText(storyDTO.getContent().getContent());
 
             Iterator<String> it = storyDTO.getContent().getContinuations().iterator();
@@ -107,11 +128,37 @@ public class StoryDetailsFragment extends Fragment {
                 getThirdContinuation().setText(it.next());
             }
         }
-
         getStoryContent().setEnabled(!readOnlyView);
         getFirstContinuation().setEnabled(!readOnlyView);
         getSecondContinuation().setEnabled(!readOnlyView);
         getThirdContinuation().setEnabled(!readOnlyView);
+
+        getFavBtn().setEnabled(isFavouriteBtnEnable());
+        getFavBtn().setChecked(isFavourite());
+        getFavBtn().setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                favouriteChange(isChecked);
+            }
+        });
+    }
+
+    private TextView getStoryTitle() {
+        return findViewById(R.id.tv_story_details_title);
+    }
+
+    private void favouriteChange(boolean favourite) {
+        if (storyDTO != null && favouriteStoryService != null) {
+            if (favourite) {
+                favouriteStoryService.addStoryToFavourite(storyDTO);
+            } else {
+                favouriteStoryService.removeStoryFromFavourite(storyDTO);
+            }
+        }
+    }
+
+    private CheckBox getFavBtn() {
+        return findViewById(R.id.btn_story_details_fav);
     }
 
     private void initSaveBtn(@NonNull View view) {
