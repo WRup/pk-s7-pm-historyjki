@@ -4,10 +4,11 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.pm.historyjki.StoryActivity" android:layout_margin="8dp">
+        tools:context=".StoryCreatorActivity" android:layout_margin="16dp">
 
     <FrameLayout
-            android:id="@+id/story_fragment_container" android:layout_width="match_parent"
+            android:id="@+id/story_creator_fragment_container" android:layout_width="match_parent"
             android:layout_height="match_parent">
+
     </FrameLayout>
 </RelativeLayout>

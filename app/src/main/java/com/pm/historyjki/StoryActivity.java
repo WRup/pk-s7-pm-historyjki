@@ -1,29 +1,33 @@
 package com.pm.historyjki;
 
-import android.os.Bundle;
-import android.support.v4.util.Consumer;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
-import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
+import com.pm.historyjki.StoryDetailsFragment.OnStoryChangeListener;
 import com.pm.historyjki.api.service.StoryApiCallService;
 import com.pm.historyjki.api.service.StoryDTO;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.Consumer;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
-public class StoryActivity extends AppCompatActivity {
+public class StoryActivity extends AppCompatActivity
+implements OnStoryChangeListener {
 
+    private StoryDTO actualStory = new StoryDTO();
     private StoryApiCallService storyApiCallService;
+
+    boolean checked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
-
         storyApiCallService = new StoryApiCallService(this);
-
         initStory();
     }
 
@@ -34,31 +38,53 @@ public class StoryActivity extends AppCompatActivity {
         storyApiCallService.getStory(storyId, new Consumer<StoryDTO>() {
             @Override
             public void accept(StoryDTO storyDTO) {
-                initStoriesView(storyDTO);
+                actualStory = storyDTO;
+                startStoryDetailsFragment(actualStory);
             }
         }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(StoryActivity.this, getText(R.string.somethingGoesWrongErrorMsg), Toast.LENGTH_SHORT)
-                     .show();
+                        .show();
             }
         });
     }
 
-    private void initStoriesView(StoryDTO storyDTO) {
-        TextView storiesTv = findViewById(R.id.tv_story);
-        storiesTv.setText(storyDTO.getContent().getContent());
-        ArrayList<TextView> continuationsTv = new ArrayList<>();
+    private void updateStory(final StoryDTO actualStory){
+        storyApiCallService.updateStory(actualStory, new Consumer<StoryDTO>() {
+                    @Override
+                    public void accept(StoryDTO storyDTO) {
+                    }
+                },
+                new ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(StoryActivity.this, getText(R.string.somethingGoesWrongErrorMsg), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+    }
 
-        continuationsTv.add((TextView) findViewById(R.id.tv_continuation_1));
-        continuationsTv.add((TextView) findViewById(R.id.tv_continuation_2));
-        continuationsTv.add((TextView) findViewById(R.id.tv_continuation_3));
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
+    }
 
-        Iterator<TextView> it1 = continuationsTv.iterator();
-        Iterator<String> it2 = storyDTO.getContent().getContinuations().iterator();
+    @Override
+    public void onChange(StoryDTO storyDTO) {
+        updateStory(storyDTO);
+    }
 
-        while (it1.hasNext() && it2.hasNext()) {
-            it1.next().setText(it2.next());
-        }
+    private void startStoryDetailsFragment(StoryDTO storyDTO) {
+        Fragment fragment = StoryDetailsFragment.newInstance(storyDTO, true);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.story_fragment_container, fragment, StoryDetailsFragment.TAG)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
     }
 }

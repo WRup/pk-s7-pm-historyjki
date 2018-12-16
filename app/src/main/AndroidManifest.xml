@@ -18,7 +18,16 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".StoryActivity">
+        <activity android:name=".StoryActivity"/>
+
+        <service
+                android:name=".api.boundService.StoriesUpdateService"
+                android:enabled="true"
+                android:exported="true"/>
+
+        <activity
+                android:windowSoftInputMode="adjustPan"
+                android:name=".StoryCreatorActivity">
         </activity>
     </application>
 
