@@ -104,7 +104,6 @@ implements OnStoryChangeListener, OnStoryContinuationOpenListener, OnContinuatio
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.story_fragment_container, fragment, StoryDetailsFragment.TAG)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
                 .commit();
     }
 
