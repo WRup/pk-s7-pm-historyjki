@@ -39,7 +39,6 @@ public class StoryCreatorActivity
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.story_creator_fragment_container, fragment, StoryFormFragment.TAG)
-                .addToBackStack(null)
                 .commit();
     }
 
