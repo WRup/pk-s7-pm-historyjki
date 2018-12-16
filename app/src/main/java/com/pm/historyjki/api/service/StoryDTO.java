@@ -19,7 +19,7 @@ public class StoryDTO implements Parcelable {
     private Integer dislikeNumber = 0;
     private StoryContent content;
 
-    private StoryDTO(Parcel in) {
+    protected StoryDTO(Parcel in) {
         id = in.readString();
         authorName = in.readString();
         title = in.readString();
@@ -50,11 +50,6 @@ public class StoryDTO implements Parcelable {
     };
 
     @Override
-    public String toString() {
-        return title;
-    }
-
-    @Override
     public int describeContents() {
         return 0;
     }
@@ -66,13 +61,15 @@ public class StoryDTO implements Parcelable {
         dest.writeString(title);
         dest.writeStringList(tags);
         if (likeNumber == null) {
-            dest.writeString(null);
+            dest.writeByte((byte) 0);
         } else {
+            dest.writeByte((byte) 1);
             dest.writeInt(likeNumber);
         }
         if (dislikeNumber == null) {
-            dest.writeString(null);
+            dest.writeByte((byte) 0);
         } else {
+            dest.writeByte((byte) 1);
             dest.writeInt(dislikeNumber);
         }
         dest.writeParcelable(content, flags);

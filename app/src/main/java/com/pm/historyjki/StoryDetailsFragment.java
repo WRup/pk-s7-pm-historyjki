@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import com.pm.historyjki.api.service.StoryContent;
+import com.pm.historyjki.api.service.StoryContinuation;
 import com.pm.historyjki.api.service.StoryDTO;
-import com.pm.historyjki.db.model.FavouriteStory;
 import com.pm.historyjki.service.FavouriteStoryService;
 
 import android.content.Context;
@@ -24,6 +24,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import lombok.NoArgsConstructor;
 
@@ -36,6 +37,8 @@ public class StoryDetailsFragment extends Fragment {
     private OnStoryDetailsSaveListener saveListener;
 
     private OnStoryChangeListener changeListener;
+
+    private OnStoryContinuationOpenListener continuationOpenListener;
 
     private StoryDTO storyDTO;
 
@@ -50,6 +53,7 @@ public class StoryDetailsFragment extends Fragment {
     private LikeDislikeButtonState likeDislikeButtonState;
 
     private FavouriteStoryService favouriteStoryService;
+
 
     public static StoryDetailsFragment newInstance(StoryDTO storyDTO, boolean readOnlyView) {
         StoryDetailsFragment fragment = new StoryDetailsFragment();
@@ -74,6 +78,10 @@ public class StoryDetailsFragment extends Fragment {
         } else {
             likeBtnVisible = false;
         }
+
+        if (context instanceof OnStoryContinuationOpenListener) {
+            continuationOpenListener = (OnStoryContinuationOpenListener) context;
+        }
     }
 
     @Override
@@ -89,7 +97,6 @@ public class StoryDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_story_details, container, false);
     }
 
@@ -118,15 +125,40 @@ public class StoryDetailsFragment extends Fragment {
             if (storyDTO.getContent() != null) {
                 getStoryContent().setText(storyDTO.getContent().getContent());
 
-                Iterator<String> it = storyDTO.getContent().getContinuations().iterator();
-                if(it.hasNext()) {
-                    getFirstContinuation().setText(it.next());
-                }
-                if(it.hasNext()) {
-                    getSecondContinuation().setText(it.next());
+                Iterator<StoryContinuation> it = storyDTO.getContent().getContinuations().iterator();
+
+                if (it.hasNext()) {
+                    final StoryContinuation c = it.next();
+                    getFirstContinuation().setText(c.getStarter());
+
+                    getOpenFirstContinuationBtn().setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            openContinuation(c);
+                        }
+                    });
                 }
                 if (it.hasNext()) {
-                    getThirdContinuation().setText(it.next());
+                    final StoryContinuation c = it.next();
+                    getSecondContinuation().setText(c.getStarter());
+
+                    getOpenSecondContinuationBtn().setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            openContinuation(c);
+                        }
+                    });
+                }
+                if (it.hasNext()) {
+                    final StoryContinuation c = it.next();
+                    getThirdContinuation().setText(c.getStarter());
+
+                    getOpenThirdContinuationBtn().setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            openContinuation(c);
+                        }
+                    });
                 }
             }
         }
@@ -134,6 +166,10 @@ public class StoryDetailsFragment extends Fragment {
         getFirstContinuation().setEnabled(!readOnlyView);
         getSecondContinuation().setEnabled(!readOnlyView);
         getThirdContinuation().setEnabled(!readOnlyView);
+
+        getOpenFirstContinuationBtn().setEnabled(readOnlyView);
+        getOpenSecondContinuationBtn().setEnabled(readOnlyView);
+        getOpenThirdContinuationBtn().setEnabled(readOnlyView);
 
         getFavBtn().setEnabled(isFavouriteBtnEnable());
         getFavBtn().setChecked(isFavourite());
@@ -143,6 +179,12 @@ public class StoryDetailsFragment extends Fragment {
                 favouriteChange(isChecked);
             }
         });
+    }
+
+    private void openContinuation(StoryContinuation continuation) {
+        if (continuationOpenListener != null) {
+            continuationOpenListener.onStoryContinuationOpen(continuation);
+        }
     }
 
     private TextView getStoryTitle() {
@@ -178,9 +220,9 @@ public class StoryDetailsFragment extends Fragment {
                         StoryContent content = new StoryContent();
                         content.setContent(getStoryContent().getText().toString());
                         content.setContinuations(Arrays.asList(
-                                getFirstContinuation().getText().toString(),
-                                getSecondContinuation().getText().toString(),
-                                getThirdContinuation().getText().toString()
+                                StoryContinuation.builder().starter(getFirstContinuation().getText().toString()).build(),
+                                StoryContinuation.builder().starter(getSecondContinuation().getText().toString()).build(),
+                                StoryContinuation.builder().starter(getThirdContinuation().getText().toString()).build()
                         ));
                         storyDTO.setContent(content);
                         saveListener.onSave(storyDTO);
@@ -204,6 +246,18 @@ public class StoryDetailsFragment extends Fragment {
 
     private EditText getThirdContinuation() {
         return findViewById(R.id.et_continuation_3);
+    }
+
+    private ImageButton getOpenFirstContinuationBtn() {
+        return findViewById(R.id.btn_open_continuation_1);
+    }
+
+    private ImageButton getOpenSecondContinuationBtn() {
+        return findViewById(R.id.btn_open_continuation_2);
+    }
+
+    private ImageButton getOpenThirdContinuationBtn() {
+        return findViewById(R.id.btn_open_continuation_3);
     }
 
     private void initLikeBtn(@NonNull View view) {
@@ -279,6 +333,10 @@ public class StoryDetailsFragment extends Fragment {
         void onChange(StoryDTO storyDTO);
     }
 
+    public interface OnStoryContinuationOpenListener {
+        void onStoryContinuationOpen(StoryContinuation continuation);
+    }
+
     private <T extends View> T findViewById(@IdRes int id) {
         if (getView() == null) {
             throw new NullPointerException();
@@ -291,4 +349,8 @@ public class StoryDetailsFragment extends Fragment {
         LIKE,
         DISLIKE
     }
+
+
+
+
 }
