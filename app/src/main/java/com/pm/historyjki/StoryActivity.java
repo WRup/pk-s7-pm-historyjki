@@ -3,7 +3,7 @@ package com.pm.historyjki;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
 import com.pm.historyjki.StoryDetailsFragment.OnStoryChangeListener;
-import com.pm.historyjki.api.service.StoryApiCallService;
+import com.pm.historyjki.api.service.StoryApiService;
 import com.pm.historyjki.api.service.StoryDTO;
 
 import android.app.Activity;
@@ -19,7 +19,7 @@ public class StoryActivity extends AppCompatActivity
 implements OnStoryChangeListener {
 
     private StoryDTO actualStory = new StoryDTO();
-    private StoryApiCallService storyApiCallService;
+    private StoryApiService storyApiService;
 
     boolean checked = false;
 
@@ -27,7 +27,7 @@ implements OnStoryChangeListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
-        storyApiCallService = new StoryApiCallService(this);
+        storyApiService = new StoryApiService(this);
         initStory();
     }
 
@@ -35,7 +35,7 @@ implements OnStoryChangeListener {
         Bundle extras = getIntent().getExtras();
         assert extras != null;
         String storyId = extras.getString("storyId");
-        storyApiCallService.getStory(storyId, new Consumer<StoryDTO>() {
+        storyApiService.getStory(storyId, new Consumer<StoryDTO>() {
             @Override
             public void accept(StoryDTO storyDTO) {
                 actualStory = storyDTO;
@@ -51,7 +51,7 @@ implements OnStoryChangeListener {
     }
 
     private void updateStory(final StoryDTO actualStory){
-        storyApiCallService.updateStory(actualStory, new Consumer<StoryDTO>() {
+        storyApiService.updateStory(actualStory, new Consumer<StoryDTO>() {
                     @Override
                     public void accept(StoryDTO storyDTO) {
                     }

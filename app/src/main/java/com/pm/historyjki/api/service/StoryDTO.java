@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,11 +14,10 @@ public class StoryDTO implements Parcelable {
     private String id;
     private String authorName;
     private String title;
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
     private Integer likeNumber = 0;
     private Integer dislikeNumber = 0;
     private StoryContent content;
-
 
     private StoryDTO(Parcel in) {
         id = in.readString();

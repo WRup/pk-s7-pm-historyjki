@@ -1,5 +1,8 @@
 package com.pm.historyjki;
 
+import java.util.Iterator;
+
+import com.pm.historyjki.api.service.Configuration;
 import com.pm.historyjki.api.service.StoryDTO;
 
 import android.content.Context;
@@ -12,12 +15,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class StoryFormFragment extends Fragment {
+public class StoryFormFragment extends Fragment implements OnConfigurationChangeListener {
 
     public static final String TAG = StoryFormFragment.class.getSimpleName();
 
@@ -30,8 +39,6 @@ public class StoryFormFragment extends Fragment {
         Bundle args = new Bundle();
         args.putParcelable(StoryDTO.class.getSimpleName(), storyDTO);
         fragment.setArguments(args);
-
-
         return fragment;
     }
 
@@ -86,9 +93,6 @@ public class StoryFormFragment extends Fragment {
         btn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (storyDTO == null) {
-                    storyDTO = new StoryDTO();
-                }
                 storyDTO.setTitle(title.getText().toString());
                 storyDTO.setAuthorName(author.getText().toString());
                 if (submitListener != null) {
@@ -106,7 +110,46 @@ public class StoryFormFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onConfigurationChange(Configuration configuration) {
+        createTagsTable(configuration);
+    }
+
     public interface OnNewStorySubmitListener {
         void onSubmit(StoryDTO storyDTO);
+    }
+
+    private void createTagsTable(Configuration configuration) {
+        TableLayout tagsTable = findViewById(R.id.table_tags);
+
+        tagsTable.removeAllViewsInLayout();
+
+        Iterator<String> it = configuration.getTags().iterator();
+
+        while (it.hasNext()) {
+            TableRow row = new TableRow(getContext());
+            row.addView(createTagCheckbox(it.next()));
+            if (it.hasNext()) {
+                row.addView(createTagCheckbox(it.next()));
+            }
+            tagsTable.addView(row);
+        }
+    }
+
+    private CheckBox createTagCheckbox(final String tagName) {
+        CheckBox checkBox = new CheckBox(getContext());
+
+        checkBox.setText(ContextUtils.getStringResource(getContext(), tagName));
+        checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                storyDTO.getTags().remove(tagName);
+                if (isChecked) {
+                    storyDTO.getTags().add(tagName);
+                }
+            }
+        });
+
+        return checkBox;
     }
 }

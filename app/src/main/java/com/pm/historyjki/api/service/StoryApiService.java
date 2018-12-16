@@ -21,13 +21,13 @@ import android.content.Context;
 import android.support.v4.util.Consumer;
 
 
-public class StoryApiCallService {
+public class StoryApiService {
 
-    private RequestQueue requestQueue;
+    private final RequestQueue requestQueue;
 
     private static final String STORY_URL = BuildConfig.BASE_API_URL + "story/";
 
-    public StoryApiCallService(Context context) {
+    public StoryApiService(Context context) {
         requestQueue = Volley.newRequestQueue(context);
     }
 
@@ -36,7 +36,7 @@ public class StoryApiCallService {
                 new Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        StoryApiCallService.this.acceptArrayResponse(response, dtoConsumer);
+                        StoryApiService.this.acceptArrayResponse(response, dtoConsumer);
                     }
                 }, errorListener);
 
@@ -48,7 +48,7 @@ public class StoryApiCallService {
                 new Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        StoryApiCallService.this.acceptResponse(response, dtoConsumer);
+                        StoryApiService.this.acceptResponse(response, dtoConsumer);
                     }
                 }, errorListener);
 
@@ -65,7 +65,7 @@ public class StoryApiCallService {
                     new Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            StoryApiCallService.this.acceptResponse(response, dtoConsumer);
+                            StoryApiService.this.acceptResponse(response, dtoConsumer);
                         }
                     }, errorListener);
 
@@ -85,7 +85,7 @@ public class StoryApiCallService {
                     new Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            StoryApiCallService.this.acceptResponse(response, dtoConsumer);
+                            StoryApiService.this.acceptResponse(response, dtoConsumer);
                         }
                     }, errorListener);
 

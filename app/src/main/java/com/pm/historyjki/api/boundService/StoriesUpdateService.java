@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.pm.historyjki.R;
-import com.pm.historyjki.api.service.StoryApiCallService;
+import com.pm.historyjki.api.service.StoryApiService;
 import com.pm.historyjki.api.service.StoryDTO;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class StoriesUpdateService extends Service {
 
     public static final String TAG = StoriesUpdateService.class.getSimpleName();
 
-    private StoryApiCallService storyApiCallService;
+    private StoryApiService storyApiService;
     private List<StoryDTO> stories = new ArrayList<>();
     private final IBinder binder = new MyBinder();
     private Toast toast;
@@ -37,7 +37,7 @@ public class StoriesUpdateService extends Service {
     public void onCreate() {
         super.onCreate();
         timer = new Timer();
-        storyApiCallService = new StoryApiCallService(this);
+        storyApiService = new StoryApiService(this);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class StoriesUpdateService extends Service {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    storyApiCallService.getAllStories(new Consumer<List<StoryDTO>>() {
+                    storyApiService.getAllStories(new Consumer<List<StoryDTO>>() {
                                                           @Override
                                                           public void accept(List<StoryDTO> storyDTOS) {
                                                               stories.clear();

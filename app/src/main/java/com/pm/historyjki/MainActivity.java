@@ -6,7 +6,7 @@ import java.util.List;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.pm.historyjki.api.adapter.StoryAdapter;
-import com.pm.historyjki.api.service.StoryApiCallService;
+import com.pm.historyjki.api.service.StoryApiService;
 import com.pm.historyjki.api.service.StoryDTO;
 
 import android.content.Intent;
@@ -19,13 +19,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private StoryApiCallService storyApiCallService;
+    private StoryApiService storyApiService;
 //    private StoriesUpdateService storiesUpdateService;
     private List<StoryDTO> stories = new ArrayList<>();
     private ArrayAdapter<StoryDTO> storyAdapter;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        storyApiCallService = new StoryApiCallService(this);
+        storyApiService = new StoryApiService(this);
 
 
 //        Intent serviceIntent = new Intent(this, StoriesUpdateService.class);
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateCurrentStories() {
-        storyApiCallService.getAllStories(new Consumer<List<StoryDTO>>() {
+        storyApiService.getAllStories(new Consumer<List<StoryDTO>>() {
                                               @Override
                                               public void accept(List<StoryDTO> storyDTOS) {
                                                   stories.clear();
