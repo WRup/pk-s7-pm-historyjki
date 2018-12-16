@@ -113,19 +113,21 @@ public class StoryDetailsFragment extends Fragment {
     }
 
     private void initView() {
-        if (storyDTO != null && storyDTO.getContent() != null) {
+        if (storyDTO != null) {
             getStoryTitle().setText(storyDTO.getTitle());
-            getStoryContent().setText(storyDTO.getContent().getContent());
+            if (storyDTO.getContent() != null) {
+                getStoryContent().setText(storyDTO.getContent().getContent());
 
-            Iterator<String> it = storyDTO.getContent().getContinuations().iterator();
-            if(it.hasNext()) {
-                getFirstContinuation().setText(it.next());
-            }
-            if(it.hasNext()) {
-                getSecondContinuation().setText(it.next());
-            }
-            if (it.hasNext()) {
-                getThirdContinuation().setText(it.next());
+                Iterator<String> it = storyDTO.getContent().getContinuations().iterator();
+                if(it.hasNext()) {
+                    getFirstContinuation().setText(it.next());
+                }
+                if(it.hasNext()) {
+                    getSecondContinuation().setText(it.next());
+                }
+                if (it.hasNext()) {
+                    getThirdContinuation().setText(it.next());
+                }
             }
         }
         getStoryContent().setEnabled(!readOnlyView);
