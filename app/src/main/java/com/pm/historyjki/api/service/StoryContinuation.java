@@ -5,31 +5,39 @@ import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class StoryContent implements Parcelable {
+@AllArgsConstructor
+@Builder
+public class StoryContinuation implements Parcelable {
+
+    private String starter;
 
     private String content;
 
+    @Builder.Default
     private List<StoryContinuation> continuations = new ArrayList<>();
 
-    private StoryContent(Parcel in) {
+    private StoryContinuation(Parcel in) {
+        starter = in.readString();
         content = in.readString();
         continuations = in.createTypedArrayList(StoryContinuation.CREATOR);
     }
 
-    public static final Creator<StoryContent> CREATOR = new Creator<StoryContent>() {
+    public static final Creator<StoryContinuation> CREATOR = new Creator<StoryContinuation>() {
         @Override
-        public StoryContent createFromParcel(Parcel in) {
-            return new StoryContent(in);
+        public StoryContinuation createFromParcel(Parcel in) {
+            return new StoryContinuation(in);
         }
 
         @Override
-        public StoryContent[] newArray(int size) {
-            return new StoryContent[size];
+        public StoryContinuation[] newArray(int size) {
+            return new StoryContinuation[size];
         }
     };
 
@@ -40,6 +48,7 @@ public class StoryContent implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(starter);
         dest.writeString(content);
         dest.writeTypedList(continuations);
     }
